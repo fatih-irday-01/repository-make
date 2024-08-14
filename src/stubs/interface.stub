@@ -1,0 +1,13 @@
+<?php
+
+namespace {{ namespace }};
+
+/**
+ * Interface {{ class }}
+ *
+ * @package {{ namespace }}\{{ class }}
+ */
+interface {{ class }}
+{
+    //
+}

@@ -1,0 +1,23 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\{{ model }};
+use App\Services\Interfaces\{{ interface }};
+use Fatihirday\RepositoryMake\Services\Repositories\EloquentRepository;
+
+/**
+ * Repository {{ class }}
+ *
+ * @package {{ namespace }}\{{ class }}
+ */
+class {{ class }} extends EloquentRepository implements {{ interface }}
+{
+    /**
+     * @param {{ model }} $model
+     */
+    public function __construct(protected readonly {{ model }} $model)
+    {
+        parent::__construct($model);
+    }
+}
