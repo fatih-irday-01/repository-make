@@ -3,6 +3,7 @@
 namespace Fatihirday\RepositoryMake\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
@@ -39,10 +40,7 @@ class RepositoryCommand extends GeneratorCommand
      */
     public function handle()
     {
-        $name = Str::of($this->qualifyClass($this->getNameInput()))
-            ->classBasename()->ucsplit()->first() . 'Interface';
-
-        Artisan::call('make:interface ' . $name );
+        Artisan::call('make:interface ' . $this->getInterfaceName());
 
         return parent::handle();
     }
@@ -54,7 +52,7 @@ class RepositoryCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Services\Repositories';
+        return $rootNamespace . '\Services\Repositories';
     }
 
     protected function buildClass($name)
@@ -71,7 +69,7 @@ class RepositoryCommand extends GeneratorCommand
     {
         $stub = str_replace(
             ['DummyInterface', '{{ interface }}', '{{interface}}'],
-            Str::of($name)->classBasename()->ucsplit()->first() . 'Interface',
+            $this->getInterfaceName($name),
             $stub
         );
 
@@ -82,10 +80,24 @@ class RepositoryCommand extends GeneratorCommand
     {
         $stub = str_replace(
             ['DummyModel', '{{ model }}', '{{model}}'],
-            Str::of($name)->classBasename()->ucsplit()->first(),
+            $this->getBaseName($name),
             $stub
         );
 
         return $this;
+    }
+
+    protected function getBaseName(?string $name = null): string
+    {
+        $name ??= $this->qualifyClass($this->getNameInput());
+
+        return Str::of($name)->classBasename()->before('Repository')->__toString();
+    }
+
+    protected function getInterfaceName(?string $name = null): string
+    {
+        return Str::of($this->getBaseName($name))
+            ->append('Interface')
+            ->__toString();
     }
 }
